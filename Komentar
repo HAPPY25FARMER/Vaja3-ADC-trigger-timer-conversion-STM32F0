@@ -1,0 +1,1 @@
+Ko spremenimo vrednost potenciometra se value v debug modu spremeni. Najprej program ni deloval , ker ni bil vključen ADC global interrupt.
