@@ -9,7 +9,7 @@
   * inserted by the user or by software development tools
   * are owned by their respective copyright owners.
   *
-  * COPYRIGHT(c) 2018 STMicroelectronics
+  * COPYRIGHT(c) 2019 STMicroelectronics
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -56,8 +56,8 @@ TIM_HandleTypeDef htim1;
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
-static void MX_ADC_Init(void);
 static void MX_TIM1_Init(void);
+static void MX_ADC_Init(void);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
@@ -97,10 +97,10 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_ADC_Init();
   MX_TIM1_Init();
+  MX_ADC_Init();
   /* USER CODE BEGIN 2 */
-	HAL_ADC_Start_IT (&hadc);
+	HAL_ADC_Start_IT(&hadc);
 	HAL_TIM_Base_Start(&htim1);
   /* USER CODE END 2 */
 
@@ -150,7 +150,7 @@ void SystemClock_Config(void)
                               |RCC_CLOCKTYPE_PCLK1;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
 
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
   {
@@ -259,24 +259,29 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOA_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(Green LED_GPIO_Port, Green LED_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOC, Blue_LED_Pin|Green_LED_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin : LD3_Pin */
-  GPIO_InitStruct.Pin = Green LED_Pin;
+  /*Configure GPIO pins : Blue_LED_Pin Green_LED_Pin */
+  GPIO_InitStruct.Pin = Blue_LED_Pin|Green_LED_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(Green LED_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
 }
 
 /* USER CODE BEGIN 4 */
-void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
+ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 {
-	UNUSED(hadc);
-	adcVal = HAL_ADC_GetValue(hadc);
-	HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_9);
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(hadc);
+
+  /* NOTE : This function should not be modified. When the callback is needed,
+            function HAL_ADC_ConvCpltCallback must be implemented in the user file.
+   */
 	
+	adcVal = HAL_ADC_GetValue(hadc);
+	HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_0);
 }
 /* USER CODE END 4 */
 
@@ -322,3 +327,4 @@ void assert_failed(uint8_t* file, uint32_t line)
   */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+
